@@ -12,41 +12,35 @@ fetch('data.json')
     })
     .catch(error => console.error('Gagal memuat file data.json:', error));
 
-// 2. Fungsi Utama untuk merakit kartu galeri ke layar
-function tampilkanGaleri(daftarPrompt) {
+// 2. Fungsi Utama untuk merakit kartu portofolio ke layar
+function tampilkanGaleri(daftarKarya) {
     const container = document.getElementById('gallery-container');
     container.innerHTML = ''; // Bersihkan isi galeri lama
 
-    if (daftarPrompt.length === 0) {
-        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #888;">Tidak ada prompt ditemukan.</p>';
+    if (daftarKarya.length === 0) {
+        container.innerHTML = '<p style="grid-column: span 2; text-align: center; color: #888;">Tidak ada karya ditemukan.</p>';
         return;
     }
 
-    daftarPrompt.forEach(item => {
+    daftarKarya.forEach(item => {
         const card = document.createElement('div');
         card.className = 'card';
 
-        // Fitur Lazy Loading agar web tidak lemot
+        // Membuat elemen gambar dengan Lazy Loading
         const img = document.createElement('img');
         img.src = item.image;
         img.loading = "lazy"; 
         img.alt = item.title;
 
+        // Membuat elemen judul
         const title = document.createElement('h2');
         title.textContent = item.title;
 
-        const button = document.createElement('button');
-        button.className = 'copy-btn';
-        button.innerHTML = '📋 Salin Prompt';
-        button.promptText = item.prompt; 
-        
-        button.addEventListener('click', () => {
-            salinPrompt(button, button.promptText);
-        });
-
+        // SATUKAN ELEMEN: Hanya memasukkan gambar dan judul ke dalam kartu
+        // (Bagian pembuatan tombol salin sudah dihapus dari sini)
         card.appendChild(img);
         card.appendChild(title);
-        card.appendChild(button);
+        
         container.appendChild(card);
     });
 }
@@ -63,36 +57,14 @@ function inisialisasiFilter() {
             const kategori = tombol.getAttribute('data-category');
 
             if (kategori === 'semua' || kategori === 'terbaru') {
-                // Tombol 'Semua' dan 'Terbaru' sekarang sama-sama menampilkan dari yang paling baru
                 tampilkanGaleri([...semuaData].reverse());
             } 
             else {
-                // Saring datanya berdasarkan kategori (misal: "wanita")...
                 const dataDisaring = semuaData.filter(item => item.category === kategori);
-                // ...LALU balik urutannya agar yang terbaru tetap di atas!
                 tampilkanGaleri([...dataDisaring].reverse());
             }
         });
     });
 }
 
-// 4. Fungsi Sistem Salin Teks ke Clipboard
-function salinPrompt(tombol, teksPrompt) {
-    navigator.clipboard.writeText(teksPrompt)
-        .then(() => {
-            const teksAsli = tombol.innerHTML;
-            tombol.innerHTML = '✅ Berhasil Disalin!';
-            tombol.style.backgroundColor = '#2ecc71';
-            tombol.style.color = '#fff';
-
-            setTimeout(() => {
-                tombol.innerHTML = teksAsli;
-                tombol.style.backgroundColor = '';
-                tombol.style.color = '';
-            }, 2000);
-        })
-        .catch(err => {
-            console.error('Gagal menyalin teks: ', err);
-            alert('Maaf, gagal menyalin otomatis. Silakan salin manual.');
-        });
-}
+// (Fungsi salinPrompt telah dihapus karena sudah tidak dibutuhkan)
